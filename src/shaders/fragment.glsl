@@ -35,10 +35,16 @@ void main()
     
     vec4 image = texture2D(uTexture,newUvs);
     vec4 displacement = texture2D(uGrid,newUvs);
+    
+
+    vec4 final = texture2D(uTexture,newUvs - displacement.rg*0.01);    
 
 
-    vec4 final = texture2D(uTexture,newUvs - displacement.rg*0.01);
-    //vec4 final = displacement;
+
+    // vec4 visualDisplacement = displacement;
+    // visualDisplacement*=0.5;
+    // visualDisplacement+=0.5;
+    // vec4 final = visualDisplacement;
 
     gl_FragColor = final;
 }

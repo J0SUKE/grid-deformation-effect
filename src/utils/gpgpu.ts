@@ -31,7 +31,7 @@ export default class GPGPU {
     this.renderer = renderer
 
     this.params = {
-      relaxation: 0.95,
+      relaxation: 0.92,
       size: 200,
     }
 
