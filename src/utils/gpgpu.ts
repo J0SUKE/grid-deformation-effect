@@ -36,7 +36,7 @@ export default class GPGPU {
 
     this.params = {
       relaxation: 0.92,
-      size: 200,
+      size: 700,
     }
 
     this.size = Math.ceil(Math.sqrt(this.params.size))
@@ -61,6 +61,7 @@ export default class GPGPU {
 
   createVariable() {
     this.variable = this.gpgpuRenderer.addVariable('uGrid', fragmentShader, this.dataTexture)
+    this.variable.material.uniforms.uTime = new THREE.Uniform(0)
     this.variable.material.uniforms.uRelaxation = new THREE.Uniform(this.params.relaxation)
     this.variable.material.uniforms.uGridSize = new THREE.Uniform(this.size)
     this.variable.material.uniforms.uMouse = new THREE.Uniform(new THREE.Vector2(0, 0))
@@ -130,6 +131,7 @@ export default class GPGPU {
   render(time: number, deltaTime: number) {
     this.time = time
 
+    this.variable.material.uniforms.uTime.value = this.time
     this.variable.material.uniforms.uMouseMove.value *= this.variable.material.uniforms.uRelaxation.value
     this.variable.material.uniforms.uDeltaMouse.value.multiplyScalar(this.variable.material.uniforms.uRelaxation.value)
 

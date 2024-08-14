@@ -73,6 +73,7 @@ export default class Media {
         uContainerResolution: new THREE.Uniform(new THREE.Vector2()),
         uImageResolution: new THREE.Uniform(new THREE.Vector2(0, 0)),
         uDisplacement: new THREE.Uniform(0),
+        uRGBshift: new THREE.Uniform(new THREE.Vector2(0.02, 0.0)),
       },
     })
   }
@@ -86,6 +87,9 @@ export default class Media {
       if (dis) this.material.uniforms.uDisplacement.value = 1
       else this.material.uniforms.uDisplacement.value = 0
     })
+
+    this.debug.add(this.material.uniforms.uRGBshift.value, 'x').min(-0.1).max(0.1).step(0.001).name('rgb X')
+    this.debug.add(this.material.uniforms.uRGBshift.value, 'y').min(-0.1).max(0.1).step(0.001).name('rgb Y')
   }
 
   createMesh() {
