@@ -1,4 +1,4 @@
-import './style.css'
+import './style.scss'
 import Canvas from './components/canvas'
 
 class App {

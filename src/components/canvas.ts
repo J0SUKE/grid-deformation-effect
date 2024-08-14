@@ -1,9 +1,8 @@
 import * as THREE from 'three'
 import { Dimensions, Size } from '../types/types'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-//import GUI from 'lil-gui'
-
 import Media from './media'
+import GUI from 'lil-gui'
 
 export default class Canvas {
   element: HTMLCanvasElement
@@ -18,7 +17,7 @@ export default class Canvas {
   mouse: THREE.Vector2
   orbitControls: OrbitControls
   medias: Media[]
-  //debug: GUI
+  debug: GUI
 
   constructor() {
     this.element = document.getElementById('webgl') as HTMLCanvasElement
@@ -31,7 +30,7 @@ export default class Canvas {
     this.createRayCaster()
     this.createOrbitControls()
     this.addEventListeners()
-    //this.createDebug()
+    this.createDebug()
     this.createMedias()
     this.render()
   }
@@ -64,9 +63,9 @@ export default class Canvas {
     this.renderer.setPixelRatio(this.dimensions.pixelRatio)
   }
 
-  //   createDebug() {
-  //     this.debug = new GUI()
-  //   }
+  createDebug() {
+    this.debug = new GUI()
+  }
 
   setSizes() {
     let fov = this.camera.fov * (Math.PI / 180)
@@ -132,6 +131,7 @@ export default class Canvas {
     images.forEach((img) => {
       const media = new Media({
         element: img,
+        debug: this.debug,
         scene: this.scene,
         sizes: this.sizes,
         renderer: this.renderer,

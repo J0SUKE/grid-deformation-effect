@@ -142,18 +142,30 @@ table {
 .container {
   max-height: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 
+$wrapper-padding:6vmax;
+
 .wrapper {
-  display: inline;
   height: 100%;
-  width: 100%;
+  max-height: 100%;
+  padding: $wrapper-padding;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.image-container {
+  display: inline-block;
 }
 
 img {
   height: 100%;
+  max-height: calc(100dvh - calc($wrapper-padding * 2));
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
   opacity: 0;
   display: block;
 }

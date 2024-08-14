@@ -2,10 +2,12 @@ import * as THREE from 'three'
 import fragmentShader from '../shaders/gpgpu/gpgpu.glsl'
 import { GPUComputationRenderer, Variable } from 'three/addons/misc/GPUComputationRenderer.js'
 import GUI from 'lil-gui'
+import { Size } from '../types/types'
 
 interface Props {
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
+  sizes: Size
 }
 
 interface Params {
@@ -16,6 +18,7 @@ interface Params {
 export default class GPGPU {
   time: number
   size: number
+  sizes: Size
   gpgpuRenderer: GPUComputationRenderer
   renderer: THREE.WebGLRenderer
   dataTexture: THREE.DataTexture
@@ -26,9 +29,10 @@ export default class GPGPU {
   params: Params
   debug: GUI
 
-  constructor({ renderer, scene }: Props) {
+  constructor({ renderer, scene, sizes }: Props) {
     this.scene = scene
     this.renderer = renderer
+    this.sizes = sizes
 
     this.params = {
       relaxation: 0.92,
@@ -44,7 +48,7 @@ export default class GPGPU {
     this.setRendererDependencies()
     this.initiateRenderer()
     //this.createDebugPlane()
-    this.createDebug()
+    //this.createDebug()
   }
 
   createGPGPURenderer() {
@@ -72,19 +76,19 @@ export default class GPGPU {
     this.gpgpuRenderer.init()
   }
 
-  //   createDebugPlane() {
-  //     this.debugPlane = new THREE.Mesh(
-  //       new THREE.PlaneGeometry(1, 1),
-  //       new THREE.MeshBasicMaterial({
-  //         map: this.gpgpuRenderer.getCurrentRenderTarget(this.variable).texture,
-  //       })
-  //     )
+  createDebugPlane() {
+    this.debugPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({
+        map: this.gpgpuRenderer.getCurrentRenderTarget(this.variable).texture,
+      })
+    )
 
-  //     this.debugPlane.scale.set(4, 4, 4)
-  //     this.debugPlane.position.set(-4, 4, 0)
+    this.debugPlane.scale.set(8, 8, 1)
+    //this.debugPlane.position.set(-4, 4, 0)
 
-  //     this.scene.add(this.debugPlane)
-  //   }
+    this.scene.add(this.debugPlane)
+  }
 
   updateMouse(uv: THREE.Vector2) {
     this.variable.material.uniforms.uMouseMove.value = 1

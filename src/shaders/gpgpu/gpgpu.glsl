@@ -4,7 +4,6 @@ uniform float uMouseMove;
 uniform float uGridSize;
 uniform float uRelaxation;
 
-
 void main()
 {
     vec2 uv = gl_FragCoord.xy/resolution.xy;

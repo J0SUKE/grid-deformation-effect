@@ -4,12 +4,14 @@ import * as THREE from 'three'
 import vertexShader from '../shaders/vertex.glsl'
 import fragmentShader from '../shaders/fragment.glsl'
 import GPGPU from '../utils/gpgpu'
+import GUI from 'lil-gui'
 
 interface Props {
   element: HTMLImageElement
   scene: THREE.Scene
   sizes: Size
   renderer: THREE.WebGLRenderer
+  debug: GUI
 }
 
 export default class Media {
@@ -29,12 +31,14 @@ export default class Media {
   scrollSpeed: number
   gpgpu: GPGPU
   time: number
+  debug: GUI
 
-  constructor({ element, scene, sizes, renderer }: Props) {
+  constructor({ element, scene, sizes, renderer, debug }: Props) {
     this.element = element
     this.scene = scene
     this.sizes = sizes
     this.renderer = renderer
+    this.debug = debug
 
     this.currentScroll = 0
     this.lastScroll = 0
@@ -50,6 +54,7 @@ export default class Media {
 
     this.setTexture()
     this.createGPGPU()
+    this.setupDebug()
 
     this.scene.add(this.mesh)
   }
@@ -65,9 +70,21 @@ export default class Media {
       uniforms: {
         uTexture: new THREE.Uniform(new THREE.Vector4()),
         uGrid: new THREE.Uniform(new THREE.Vector4()),
-        uResolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight)),
+        uContainerResolution: new THREE.Uniform(new THREE.Vector2()),
         uImageResolution: new THREE.Uniform(new THREE.Vector2(0, 0)),
+        uDisplacement: new THREE.Uniform(0),
       },
+    })
+  }
+
+  setupDebug() {
+    const opt = {
+      dis: this.material.uniforms.uDisplacement.value > 0,
+    }
+
+    this.debug.add(opt, 'dis').onChange((dis: boolean) => {
+      if (dis) this.material.uniforms.uDisplacement.value = 1
+      else this.material.uniforms.uDisplacement.value = 0
     })
   }
 
@@ -79,6 +96,7 @@ export default class Media {
     this.gpgpu = new GPGPU({
       renderer: this.renderer,
       scene: this.scene,
+      sizes: this.sizes,
     })
   }
 
@@ -120,10 +138,13 @@ export default class Media {
   setTexture() {
     this.material.uniforms.uTexture.value = new THREE.TextureLoader().load(this.element.src, ({ image }) => {
       const { naturalWidth, naturalHeight } = image
+      const container = document.querySelector('.image-container') as HTMLElement
+      const { width, height } = container.getBoundingClientRect()
 
       console.log(naturalWidth, naturalHeight)
 
       this.material.uniforms.uImageResolution.value = new THREE.Vector2(naturalWidth, naturalHeight)
+      this.material.uniforms.uContainerResolution.value = new THREE.Vector2(width, height)
     })
   }
 
