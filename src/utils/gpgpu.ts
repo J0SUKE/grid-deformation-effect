@@ -3,16 +3,20 @@ import fragmentShader from '../shaders/gpgpu/gpgpu.glsl'
 import { GPUComputationRenderer, Variable } from 'three/addons/misc/GPUComputationRenderer.js'
 import GUI from 'lil-gui'
 import { Size } from '../types/types'
+import { min } from 'three/webgpu'
 
 interface Props {
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
   sizes: Size
+  debug: GUI
 }
 
 interface Params {
   relaxation: number
   size: number
+  distance: number
+  strengh: number
 }
 
 export default class GPGPU {
@@ -29,14 +33,17 @@ export default class GPGPU {
   params: Params
   debug: GUI
 
-  constructor({ renderer, scene, sizes }: Props) {
+  constructor({ renderer, scene, sizes, debug }: Props) {
     this.scene = scene
     this.renderer = renderer
     this.sizes = sizes
+    this.debug = debug
 
     this.params = {
-      relaxation: 0.92,
+      relaxation: 0.965,
       size: 700,
+      distance: 0.6,
+      strengh: 0.8,
     }
 
     this.size = Math.ceil(Math.sqrt(this.params.size))
@@ -48,7 +55,7 @@ export default class GPGPU {
     this.setRendererDependencies()
     this.initiateRenderer()
     //this.createDebugPlane()
-    //this.createDebug()
+    this.setupDebug()
   }
 
   createGPGPURenderer() {
@@ -67,6 +74,7 @@ export default class GPGPU {
     this.variable.material.uniforms.uMouse = new THREE.Uniform(new THREE.Vector2(0, 0))
     this.variable.material.uniforms.uDeltaMouse = new THREE.Uniform(new THREE.Vector2(0, 0))
     this.variable.material.uniforms.uMouseMove = new THREE.Uniform(0)
+    this.variable.material.uniforms.uDistance = new THREE.Uniform(this.params.distance * 10)
   }
 
   setRendererDependencies() {
@@ -97,7 +105,7 @@ export default class GPGPU {
     const current = this.variable.material.uniforms.uMouse.value as THREE.Vector2
 
     current.subVectors(uv, current)
-    current.multiplyScalar(50)
+    current.multiplyScalar(this.params.strengh * 100)
 
     this.variable.material.uniforms.uDeltaMouse.value = current
     this.variable.material.uniforms.uMouse.value = uv
@@ -107,9 +115,7 @@ export default class GPGPU {
     return this.gpgpuRenderer.getCurrentRenderTarget(this.variable).textures[0]
   }
 
-  createDebug() {
-    this.debug = new GUI()
-
+  setupDebug() {
     this.debug
       .add(this.params, 'relaxation')
       .min(0.5)
@@ -118,21 +124,23 @@ export default class GPGPU {
       .onChange((_: number) => {
         this.variable.material.uniforms.uRelaxation.value = _
       })
+
     this.debug
-      .add(this.params, 'size')
-      .min(10)
-      .max(1000)
-      .step(2)
-      .onChange((value: number) => {
-        this.variable.material.uniforms.uGridSize.value = Math.ceil(Math.sqrt(value))
+      .add(this.params, 'distance')
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .onChange((_: number) => {
+        this.variable.material.uniforms.uDistance.value = _ * 10
       })
+    this.debug.add(this.params, 'strengh').min(0).max(1).step(0.001)
   }
 
   render(time: number, deltaTime: number) {
     this.time = time
 
     this.variable.material.uniforms.uTime.value = this.time
-    this.variable.material.uniforms.uMouseMove.value *= this.variable.material.uniforms.uRelaxation.value
+    this.variable.material.uniforms.uMouseMove.value *= 0.95
     this.variable.material.uniforms.uDeltaMouse.value.multiplyScalar(this.variable.material.uniforms.uRelaxation.value)
 
     this.gpgpuRenderer.compute()

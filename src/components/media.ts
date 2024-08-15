@@ -83,13 +83,16 @@ export default class Media {
       dis: this.material.uniforms.uDisplacement.value > 0,
     }
 
-    this.debug.add(opt, 'dis').onChange((dis: boolean) => {
-      if (dis) this.material.uniforms.uDisplacement.value = 1
-      else this.material.uniforms.uDisplacement.value = 0
-    })
+    this.debug
+      .add(opt, 'dis')
+      .onChange((dis: boolean) => {
+        if (dis) this.material.uniforms.uDisplacement.value = 1
+        else this.material.uniforms.uDisplacement.value = 0
+      })
+      .name('grid map')
 
-    this.debug.add(this.material.uniforms.uRGBshift.value, 'x').min(-0.1).max(0.1).step(0.001).name('rgb X')
-    this.debug.add(this.material.uniforms.uRGBshift.value, 'y').min(-0.1).max(0.1).step(0.001).name('rgb Y')
+    //this.debug.add(this.material.uniforms.uRGBshift.value, 'x').min(-0.1).max(0.1).step(0.001).name('rgb X')
+    //this.debug.add(this.material.uniforms.uRGBshift.value, 'y').min(-0.1).max(0.1).step(0.001).name('rgb Y')
   }
 
   createMesh() {
@@ -101,6 +104,7 @@ export default class Media {
       renderer: this.renderer,
       scene: this.scene,
       sizes: this.sizes,
+      debug: this.debug,
     })
   }
 

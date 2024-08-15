@@ -145,7 +145,7 @@ table {
   box-sizing: border-box;
 }
 
-$wrapper-padding:6vmax;
+$wrapper-padding:0vmax;
 
 .wrapper {
   height: 100%;
@@ -155,6 +155,7 @@ $wrapper-padding:6vmax;
   display: flex;
   justify-content: center;
   align-items: center; 
+  overflow: hidden;
 }
 
 .image-container {
@@ -163,9 +164,9 @@ $wrapper-padding:6vmax;
 
 img {
   height: 100%;
-  max-height: calc(100dvh - calc($wrapper-padding * 2));
+  //max-height: calc(100dvh - calc($wrapper-padding * 2));
   width: 100%;
-  object-fit: contain;
+  object-fit: cover;
   opacity: 0;
   display: block;
 }

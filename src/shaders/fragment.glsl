@@ -59,14 +59,15 @@ void main()
     vec2 shift = displacement.rg*0.001;
 
     float displacementStrengh=length(displacement.rg);
+    displacementStrengh = clamp(displacementStrengh,0.,2.);
     
-    float redStrengh = 1.+displacementStrengh*2.;
+    float redStrengh = 1.+displacementStrengh*0.25;
     redUvs += shift*redStrengh;    
     
     float blueStrengh = 1.+displacementStrengh*1.5;
     blueUvs += shift*blueStrengh; 
     
-    float greenStrengh = 1.+displacementStrengh;
+    float greenStrengh = 1.+displacementStrengh*2.;
     greenUvs += shift*greenStrengh;
     
     float red = texture2D(uTexture,redUvs).r;
@@ -86,6 +87,6 @@ void main()
 
     gl_FragColor = final;
 
-    // #include <tonemapping_fragment>
-    // #include <colorspace_fragment>
+    //#include <tonemapping_fragment>
+    //#include <colorspace_fragment>
 }
