@@ -54,7 +54,7 @@ export default class Media {
 
     this.setTexture()
     this.createGPGPU()
-    this.setupDebug()
+    //this.setupDebug()
 
     this.scene.add(this.mesh)
   }
@@ -69,35 +69,32 @@ export default class Media {
       fragmentShader,
       uniforms: {
         uTexture: new THREE.Uniform(new THREE.Vector4()),
-        uGrid: new THREE.Uniform(new THREE.Vector4()),
-        uContainerResolution: new THREE.Uniform(new THREE.Vector2()),
-        uImageResolution: new THREE.Uniform(new THREE.Vector2(0, 0)),
-        uDisplacement: new THREE.Uniform(0),
-        uRGBshift: new THREE.Uniform(new THREE.Vector2(0.02, 0.0)),
+        uContainerResolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight)),
+        uImageResolution: new THREE.Uniform(new THREE.Vector2()),
       },
     })
-  }
-
-  setupDebug() {
-    const opt = {
-      dis: this.material.uniforms.uDisplacement.value > 0,
-    }
-
-    this.debug
-      .add(opt, 'dis')
-      .onChange((dis: boolean) => {
-        if (dis) this.material.uniforms.uDisplacement.value = 1
-        else this.material.uniforms.uDisplacement.value = 0
-      })
-      .name('grid map')
-
-    //this.debug.add(this.material.uniforms.uRGBshift.value, 'x').min(-0.1).max(0.1).step(0.001).name('rgb X')
-    //this.debug.add(this.material.uniforms.uRGBshift.value, 'y').min(-0.1).max(0.1).step(0.001).name('rgb Y')
   }
 
   createMesh() {
     this.mesh = new THREE.Mesh(this.geometry, this.material)
   }
+
+  // setupDebug() {
+  //   const opt = {
+  //     dis: this.material.uniforms.uDisplacement.value > 0,
+  //   }
+
+  //   this.debug
+  //     .add(opt, 'dis')
+  //     .onChange((dis: boolean) => {
+  //       if (dis) this.material.uniforms.uDisplacement.value = 1
+  //       else this.material.uniforms.uDisplacement.value = 0
+  //     })
+  //     .name('grid map')
+
+  //   //this.debug.add(this.material.uniforms.uRGBshift.value, 'x').min(-0.1).max(0.1).step(0.001).name('rgb X')
+  //   //this.debug.add(this.material.uniforms.uRGBshift.value, 'y').min(-0.1).max(0.1).step(0.001).name('rgb Y')
+  // }
 
   createGPGPU() {
     this.gpgpu = new GPGPU({
@@ -146,13 +143,7 @@ export default class Media {
   setTexture() {
     this.material.uniforms.uTexture.value = new THREE.TextureLoader().load(this.element.src, ({ image }) => {
       const { naturalWidth, naturalHeight } = image
-      const container = document.querySelector('.image-container') as HTMLElement
-      const { width, height } = container.getBoundingClientRect()
-
-      console.log(naturalWidth, naturalHeight)
-
       this.material.uniforms.uImageResolution.value = new THREE.Vector2(naturalWidth, naturalHeight)
-      this.material.uniforms.uContainerResolution.value = new THREE.Vector2(width, height)
     })
   }
 
@@ -184,10 +175,10 @@ export default class Media {
 
   render(time: number) {
     const deltaTime = this.time - time
-    this.time = time
+    //this.time = time
 
-    this.gpgpu.render(time, deltaTime)
+    //this.gpgpu.render(time, deltaTime)
 
-    this.material.uniforms.uGrid.value = this.gpgpu.getTexture()
+    //this.material.uniforms.uGrid.value = this.gpgpu.getTexture()
   }
 }
