@@ -54,7 +54,7 @@ export default class Media {
 
     this.setTexture()
     this.createGPGPU()
-    this.setupDebug()
+    //this.setupDebug()
 
     this.scene.add(this.mesh)
   }
@@ -63,19 +63,31 @@ export default class Media {
     this.geometry = new THREE.PlaneGeometry(1, 1)
   }
 
+  //
   createMaterial() {
     this.material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
         uTexture: new THREE.Uniform(new THREE.Vector4()),
+        uContainerResolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight)),
+        uImageResolution: new THREE.Uniform(new THREE.Vector2()),
+
+        //add this new Uniform
         uGrid: new THREE.Uniform(new THREE.Vector4()),
-        uContainerResolution: new THREE.Uniform(new THREE.Vector2()),
-        uImageResolution: new THREE.Uniform(new THREE.Vector2(0, 0)),
-        uDisplacement: new THREE.Uniform(0),
-        uRGBshift: new THREE.Uniform(new THREE.Vector2(0.02, 0.0)),
       },
     })
+  }
+
+  setTexture() {
+    this.material.uniforms.uTexture.value = new THREE.TextureLoader().load(this.element.src, ({ image }) => {
+      const { naturalWidth, naturalHeight } = image
+      this.material.uniforms.uImageResolution.value = new THREE.Vector2(naturalWidth, naturalHeight)
+    })
+  }
+
+  createMesh() {
+    this.mesh = new THREE.Mesh(this.geometry, this.material)
   }
 
   setupDebug() {
@@ -93,10 +105,6 @@ export default class Media {
 
     //this.debug.add(this.material.uniforms.uRGBshift.value, 'x').min(-0.1).max(0.1).step(0.001).name('rgb X')
     //this.debug.add(this.material.uniforms.uRGBshift.value, 'y').min(-0.1).max(0.1).step(0.001).name('rgb Y')
-  }
-
-  createMesh() {
-    this.mesh = new THREE.Mesh(this.geometry, this.material)
   }
 
   createGPGPU() {
@@ -143,19 +151,6 @@ export default class Media {
     this.mesh.position.y = this.meshPostion.y
   }
 
-  setTexture() {
-    this.material.uniforms.uTexture.value = new THREE.TextureLoader().load(this.element.src, ({ image }) => {
-      const { naturalWidth, naturalHeight } = image
-      const container = document.querySelector('.image-container') as HTMLElement
-      const { width, height } = container.getBoundingClientRect()
-
-      console.log(naturalWidth, naturalHeight)
-
-      this.material.uniforms.uImageResolution.value = new THREE.Vector2(naturalWidth, naturalHeight)
-      this.material.uniforms.uContainerResolution.value = new THREE.Vector2(width, height)
-    })
-  }
-
   updateScroll(scrollY: number) {
     this.currentScroll = (-scrollY * this.sizes.height) / window.innerHeight
 
@@ -182,12 +177,8 @@ export default class Media {
     this.gpgpu.updateMouse(uv)
   }
 
-  render(time: number) {
-    const deltaTime = this.time - time
-    this.time = time
-
-    this.gpgpu.render(time, deltaTime)
-
+  render() {
+    this.gpgpu.render()
     this.material.uniforms.uGrid.value = this.gpgpu.getTexture()
   }
 }
