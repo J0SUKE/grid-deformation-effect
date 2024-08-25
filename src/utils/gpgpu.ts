@@ -7,8 +7,6 @@ import { Size } from '../types/types'
 interface Props {
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
-  sizes: Size
-  debug: GUI
 }
 
 interface Params {
@@ -26,7 +24,6 @@ export default class GPGPU {
   debugPlane: THREE.Mesh
   scene: THREE.Scene
   params: Params
-  debug: GUI
 
   constructor({ renderer, scene }: Props) {
     this.scene = scene
@@ -62,6 +59,8 @@ export default class GPGPU {
     this.variable.material.uniforms.uGridSize = new THREE.Uniform(this.size)
     this.variable.material.uniforms.uMouse = new THREE.Uniform(new THREE.Vector2(0, 0))
     this.variable.material.uniforms.uDeltaMouse = new THREE.Uniform(new THREE.Vector2(0, 0))
+    //
+    this.variable.material.uniforms.uMouseMove = new THREE.Uniform(0)
   }
 
   setRendererDependencies() {
@@ -73,7 +72,7 @@ export default class GPGPU {
   }
 
   updateMouse(uv: THREE.Vector2) {
-    //this.variable.material.uniforms.uMouseMove.value = 1
+    this.variable.material.uniforms.uMouseMove.value = 1
 
     const current = this.variable.material.uniforms.uMouse.value as THREE.Vector2
 
@@ -88,8 +87,9 @@ export default class GPGPU {
     return this.gpgpuRenderer.getCurrentRenderTarget(this.variable).textures[0]
   }
 
-  render(time: number, deltaTime: number) {
-    //this.variable.material.uniforms.uDeltaMouse.value.multiplyScalar(this.variable.material.uniforms.uRelaxation.value)
+  render() {
+    this.variable.material.uniforms.uMouseMove.value *= 0.95
+    this.variable.material.uniforms.uDeltaMouse.value.multiplyScalar(0.965)
 
     this.gpgpuRenderer.compute()
   }

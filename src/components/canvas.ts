@@ -30,7 +30,7 @@ export default class Canvas {
     this.createRayCaster()
     this.createOrbitControls()
     this.addEventListeners()
-    this.createDebug()
+    //this.createDebug()
     this.createMedias()
     this.render()
   }
@@ -92,10 +92,12 @@ export default class Canvas {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
     this.raycaster.setFromCamera(this.mouse, this.camera)
+
     const intersects = this.raycaster.intersectObjects(this.scene.children)
     const target = intersects[0]
     if (target && 'material' in target.object) {
       const targetMesh = intersects[0].object as THREE.Mesh
+
       this.medias.forEach((media) => {
         if (media.mesh === targetMesh && target.uv) {
           media.onMouseMove(target.uv)
@@ -106,7 +108,6 @@ export default class Canvas {
 
   addEventListeners() {
     window.addEventListener('mousemove', this.onMouseMove.bind(this))
-    window.addEventListener('resize', this.onResize.bind(this))
   }
 
   onResize() {

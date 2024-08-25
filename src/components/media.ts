@@ -63,15 +63,18 @@ export default class Media {
     this.geometry = new THREE.PlaneGeometry(1, 1)
   }
 
+  //
   createMaterial() {
     this.material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
         uTexture: new THREE.Uniform(new THREE.Vector4()),
-        uGrid: new THREE.Uniform(new THREE.Vector4()),
         uContainerResolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight)),
         uImageResolution: new THREE.Uniform(new THREE.Vector2()),
+
+        //add this new Uniform
+        uGrid: new THREE.Uniform(new THREE.Vector4()),
       },
     })
   }
@@ -174,12 +177,8 @@ export default class Media {
     this.gpgpu.updateMouse(uv)
   }
 
-  render(time: number) {
-    const deltaTime = this.time - time
-    this.time = time
-    //
-    this.gpgpu.render(time, deltaTime)
-    //
+  render() {
+    this.gpgpu.render()
     this.material.uniforms.uGrid.value = this.gpgpu.getTexture()
   }
 }
