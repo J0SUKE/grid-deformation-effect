@@ -2,7 +2,7 @@
 
 Demo for the tutorial on how to apply a pixel/grid displacement to a texture in Three.js using shaders and GPGPU with a subtle RGB shift effect on cursor move.
 
-![Featured Image](https://tympanus.net/codrops/wp-content/uploads/2024/08/griddistortion_feat.jpg)
+![Featured Image](https://tympanus.net/codrops/wp-content/uploads/2024/08/griddistortion_feat-1.jpg)
 
 [Article on Codrops](https://tympanus.net/codrops/?p=80158)
 
