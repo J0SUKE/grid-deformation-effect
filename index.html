@@ -1,17 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grid Displacement Texture | Codrops</title>
+    <meta name="description" content="Demo for the tutorial on how to apply a pixel/grid displacement to a texture in Three.js" />
+    <meta name="keywords" content="cursor displacement, mousemove rgb shift, threejs" />
+    <meta name="author" content="Jean Mazouni for Codrops" />
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <script>document.documentElement.className="js";</script>
+    <script>
+      window.addEventListener('load', function() {
+        const image = document.querySelector('.image-container img');
+
+        // Check if the image is already fully loaded
+        if (image.complete) {
+          removeLoadingClass();
+        } else {
+          image.addEventListener('load', removeLoadingClass);
+        }
+
+        function removeLoadingClass() {
+          // Remove the "loading" class from the body
+          document.body.classList.remove('loading');
+        }
+      });
+    </script>
   </head>
-  <body>
+  <body class="loading">
+    <header class="frame">
+      <h1 class="frame__title">Grid Deformation Effect by <a href="https://www.jeanmazouni.com/" target="_blank">Jean Mazouni</a></h1>
+      <a class="frame__back" href="https://tympanus.net/codrops/?p=80158">Read the tutorial</a>
+      <a class="frame__archive" href="https://tympanus.net/codrops/demos/">All demos</a>
+      <a class="frame__github" href="https://github.com/J0SUKE/grid-deformation-effect">GitHub</a>
+      <nav class="frame__tags">
+        <a href="https://tympanus.net/codrops/demos/?tag=three-js">#three.js</a>
+        <a href="https://tympanus.net/codrops/demos/?tag=webgl">#webgl</a>
+        <a href="https://tympanus.net/codrops/demos/?tag=distortion">#distortion</a>
+      </nav>
+    </header>
     <div id="app">
       <div class="container">
         <div class="wrapper">
           <div class="image-container">
-            <img src="./3.jpg" alt="" />
+            <img src="./image.jpg" alt="Japanese table scene" />
           </div>
         </div>
       </div>
