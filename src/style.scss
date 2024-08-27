@@ -1,127 +1,165 @@
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
 }
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
+
+:root {
+  font-size: 12px;
+  --color-text: #fff;
+  --color-bg: #aaa;
+  --color-link: #fff;
+  --color-link-hover: #fff;
+  --page-padding: 1.5rem;
 }
+
 body {
-  line-height: 1;
+  margin: 0;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  font-family: ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-ol,
-ul {
-  list-style: none;
-}
-blockquote,
-q {
-  quotes: none;
-}
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
+
+/* Page Loader */
+.js .loading::before,
+.js .loading::after {
   content: '';
-  content: none;
+  position: fixed;
+  z-index: 10000;
 }
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+
+.js .loading::before {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
 }
+
+.js .loading::after {
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 1px;
+  margin: 0 0 0 -50px;
+  background: var(--color-link);
+  animation: loaderAnim 1.5s ease-in-out infinite alternate forwards;
+
+}
+
+@keyframes loaderAnim {
+  0% {
+    transform: scaleX(0);
+    transform-origin: 0% 50%;
+  }
+  50% {
+    transform: scaleX(1);
+    transform-origin: 0% 50%;
+  }
+  50.1% {
+    transform: scaleX(1);
+    transform-origin: 100% 50%;
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: 100% 50%;
+  }
+}
+
+.js canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-link);
+  outline: none;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--color-link-hover);
+  outline: none;
+}
+
+/* Better focus styles from https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible */
+a:focus {
+  /* Provide a fallback style for browsers
+   that don't support :focus-visible */
+  outline: none;
+  background: lightgrey;
+}
+
+a:focus:not(:focus-visible) {
+  /* Remove the focus indicator on mouse-focus for browsers
+   that do support :focus-visible */
+  background: transparent;
+}
+
+a:focus-visible {
+  /* Draw a very noticeable focus style for
+   keyboard-focus on browsers that do support
+   :focus-visible */
+  outline: 2px solid red;
+  background: transparent;
+}
+
+.frame {
+  padding: 3rem var(--page-padding) 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  display: grid;
+  z-index: 1000;
+  grid-row-gap: 1rem;
+  grid-column-gap: 2rem;
+  pointer-events: none;
+  justify-items: start;
+  grid-template-columns: auto auto;
+  grid-template-areas: 'title' 'back' 'archive' 'github' 'sponsor' 'tags';
+}
+
+.frame #cdawrap {
+  justify-self: start;
+}
+
+.frame a {
+  pointer-events: auto;
+}
+
+.frame__title {
+  grid-area: title;
+  font-size: inherit;
+  margin: 0;
+}
+
+.frame__back {
+  grid-area: back;
+  justify-self: start;
+}
+
+.frame__archive {
+  grid-area: archive;
+  justify-self: start;
+}
+
+.frame__github {
+  grid-area: github;
+}
+
+.frame__tags {
+  grid-area: tags;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+} 
 
 #webgl {
   position: fixed;
@@ -164,9 +202,27 @@ $wrapper-padding:0vmax;
 
 img {
   height: 100%;
-  //max-height: calc(100dvh - calc($wrapper-padding * 2));
   width: 100%;
   object-fit: cover;
   opacity: 0;
   display: block;
 }
+
+@media screen and (min-width: 53em) {
+  body {
+    --page-padding: 2rem 3rem;
+  }
+  .frame {
+    padding: var(--page-padding);
+    height: 100%;
+    grid-template-columns: auto auto auto auto 1fr;
+    grid-template-rows: auto auto;
+    align-content: space-between;
+    grid-template-areas: 'title back github archive ...' 'tags tags tags sponsor sponsor';
+  }
+  .frame #cdawrap {
+    justify-self: end;
+    text-align: right
+  }
+}
+
